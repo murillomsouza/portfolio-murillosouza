@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import LoadingScreen from './components/LoadingScreen';
-import Hero from './components/Hero'; // Importamos o novo componente
+import Hero from './components/Hero';
+import Projects from './components/Projects'; 
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -12,7 +13,7 @@ export default function App() {
       ) : (
         <main className="animate-fade-in">
           <Hero />
-          {/* As próximas seções (Projetos, Contato) entrarão aqui depois */}
+          <Projects /> 
         </main>
       )}
     </div>
