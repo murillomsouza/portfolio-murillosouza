@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import Hero from './components/Hero';
-import Projects from './components/Projects'; 
+import About from './components/About';
+import Projects from './components/Projects';
+import Contact from './components/Contact';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className="bg-slate-950 min-h-screen">
+    <div className="bg-slate-950 min-h-screen font-sans">
       {isLoading ? (
         <LoadingScreen onFinished={() => setIsLoading(false)} />
       ) : (
         <main className="animate-fade-in">
           <Hero />
-          <Projects /> 
+          <About />
+          <Projects />
+          <Contact />
         </main>
       )}
     </div>
