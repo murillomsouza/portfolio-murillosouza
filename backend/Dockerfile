@@ -1,14 +1,18 @@
-FROM eclipse-temurin:21-jdk-alpine
-
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
 
-RUN chmod +x mvnw && ./mvnw dependency:go-offline
+RUN chmod +x ./mvnw
+RUN ./mvnw clean package -DskipTests
 
-COPY src ./src
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
-
-CMD ["./mvnw", "spring-boot:run"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
