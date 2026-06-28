@@ -1,10 +1,16 @@
-HELP.md
+# Arquivos compilados e pacotes
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
 
-### STS ###
+# Variáveis de Ambiente e Credenciais Locais
+.env
+application-dev.properties
+
+# Diretórios do Eclipse / VS Code / IntelliJ 
 .apt_generated
 .classpath
 .factorypath
@@ -12,22 +18,19 @@ target/
 .settings
 .springBeans
 .sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+.vscode/
+.idea/
 *.iml
+*.iws
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Logs e Arquivos Temporários
+*.log
+hs_err_pid*
 
-### VS Code ###
-.vscode/
+# Arquivos do Maven Wrapper 
+.mvn/wrapper/maven-wrapper.jar
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db

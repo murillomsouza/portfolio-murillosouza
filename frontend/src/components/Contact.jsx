@@ -20,22 +20,53 @@ export default function Contact() {
     };
   }, []);
 
-  // Simulação de envio do formulário
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setFormState('loading');
     
-    setTimeout(() => {
-      setFormState('success');
-      setTimeout(() => setFormState('idle'), 4000);
-      e.target.reset();
-    }, 1500);
+    // Captura os dados (certifique-se que os seus inputs têm os atributos name="name", name="email", etc.)
+    const payload = {
+      name: e.target.name.value,
+      email: e.target.email.value,
+      message: e.target.message.value
+    };
+
+    // Definindo a URL base da API.
+    // Dica para produção: ao subir para a Vercel, substitua a linha abaixo por:
+    // const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8080';
+    const API_BASE_URL = 'http://127.0.0.1:8080';
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        setFormState('success');
+        e.target.reset(); // Limpa o formulário após o sucesso
+      } else {
+        console.error("O servidor rejeitou a requisição.");
+        setFormState('idle'); 
+        alert("Não foi possível enviar a mensagem. Verifique os dados inseridos.");
+      }
+    } catch (error) {
+      console.error("Erro na comunicação com a API:", error);
+      setFormState('idle');
+      alert("O servidor de e-mails está indisponível no momento. Tente novamente mais tarde.");
+    } finally {
+      if (formState !== 'idle') {
+        setTimeout(() => setFormState('idle'), 4000);
+      }
+    }
   };
 
   return (
     <section id="contato" className="py-24 bg-gradient-to-b from-slate-900 to-slate-950 text-slate-200 relative overflow-hidden">
-      
-      {/* Brilho de fundo sutil */}
+
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-emerald-900/10 blur-[120px] rounded-full pointer-events-none"></div>
 
       <div 
@@ -46,7 +77,7 @@ export default function Contact() {
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
           
-          {/* Coluna da Esquerda: Textos de Contato */}
+          {/* Coluna da Esquerda */}
           <div className="flex flex-col space-y-8">
             <div className="space-y-4">
               <div className="flex items-center gap-4 mb-2">
