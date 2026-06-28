@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-// Removidos Github e Linkedin do import do lucide-react
 import { Mail, MapPin, Send, Terminal, Coffee } from 'lucide-react';
 
 export default function Contact() {
   const sectionRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [formState, setFormState] = useState('idle'); // idle, loading, success
+  const [formState, setFormState] = useState('idle');
 
   // Efeito Reveal on Scroll
   useEffect(() => {
@@ -24,17 +23,13 @@ export default function Contact() {
     e.preventDefault();
     setFormState('loading');
     
-    // Captura os dados (certifique-se que os seus inputs têm os atributos name="name", name="email", etc.)
     const payload = {
       name: e.target.name.value,
       email: e.target.email.value,
       message: e.target.message.value
     };
 
-    // Definindo a URL base da API.
-    // Dica para produção: ao subir para a Vercel, substitua a linha abaixo por:
-    // const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8080';
-    const API_BASE_URL = 'http://127.0.0.1:8080';
+    const API_BASE_URL = 'https://portfolio-api-murillo.onrender.com';
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/contact`, {
@@ -47,7 +42,7 @@ export default function Contact() {
 
       if (response.ok) {
         setFormState('success');
-        e.target.reset(); // Limpa o formulário após o sucesso
+        e.target.reset(); 
       } else {
         console.error("O servidor rejeitou a requisição.");
         setFormState('idle'); 
@@ -114,13 +109,13 @@ export default function Contact() {
             </div>
 
             <div className="flex gap-4 pt-4">
-              {/* Ícone puro do GitHub */}
+              
               <a href="https://github.com/murillomsouza" target="_blank" rel="noreferrer" className="p-3 bg-slate-900 border border-slate-800 rounded-lg text-slate-400 hover:text-white hover:border-slate-600 transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A4.8 4.8 0 0 0 8 18v4"></path>
                 </svg>
               </a>
-              {/* Ícone puro do LinkedIn */}
+
               <a href="https://linkedin.com/in/murillo-de-souza" target="_blank" rel="noreferrer" className="p-3 bg-slate-900 border border-slate-800 rounded-lg text-slate-400 hover:text-[#0a66c2] hover:border-[#0a66c2]/50 transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
@@ -131,7 +126,7 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Coluna da Direita: Formulário estilo Terminal */}
+          {/* Coluna da Direita */}
           <div className="bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden relative group">
             
             <div className="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center justify-between">
