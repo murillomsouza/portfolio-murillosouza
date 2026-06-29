@@ -6,6 +6,9 @@ export default function Contact() {
   const [isVisible, setIsVisible] = useState(false);
   const [formState, setFormState] = useState('idle');
 
+  // 🔴 CHAVE MESTRA: Mude para 'false' quando o backend estiver pronto
+  const isMaintenanceMode = true; 
+
   // Efeito Reveal on Scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -21,6 +24,8 @@ export default function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isMaintenanceMode) return; // Bloqueia o envio se estiver em manutenção
+
     setFormState('loading');
     
     const payload = {
@@ -31,14 +36,21 @@ export default function Contact() {
 
     const API_BASE_URL = 'https://murillosouza.onrender.com';
 
+    // Timeout de 10 segundos para não deixar o usuário esperando infinitamente
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
     try {
       const response = await fetch(`${API_BASE_URL}/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         setFormState('success');
@@ -51,7 +63,7 @@ export default function Contact() {
     } catch (error) {
       console.error("Erro na comunicação com a API:", error);
       setFormState('idle');
-      alert("O servidor de e-mails está indisponível no momento. Tente novamente mais tarde.");
+      alert("Tempo limite excedido ou servidor indisponível. Tente novamente mais tarde.");
     } finally {
       if (formState !== 'idle') {
         setTimeout(() => setFormState('idle'), 4000);
@@ -126,7 +138,7 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Coluna da Direita */}
+          {/* Coluna da Direita (O Terminal) */}
           <div className="bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden relative group">
             
             <div className="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center justify-between">
@@ -135,8 +147,13 @@ export default function Contact() {
                 <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
                 <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
               </div>
-              <div className="flex items-center gap-2 text-slate-500 text-sm font-mono">
-                <Terminal size={14} /> contact.sh
+              <div className="flex items-center gap-4 text-slate-500 text-sm font-mono">
+                {isMaintenanceMode && (
+                  <span className="bg-orange-500/10 text-orange-400 text-[10px] px-2 py-0.5 rounded border border-orange-500/30 flex items-center gap-1">
+                    <span>🚀</span> STATUS: BETA
+                  </span>
+                )}
+                <span className="flex items-center gap-2"><Terminal size={14} /> contact.sh</span>
               </div>
             </div>
 
@@ -147,8 +164,9 @@ export default function Contact() {
                   type="text" 
                   id="name" 
                   required
+                  disabled={isMaintenanceMode || formState !== 'idle'}
                   placeholder="Seu nome ou empresa"
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -158,8 +176,9 @@ export default function Contact() {
                   type="email" 
                   id="email" 
                   required
+                  disabled={isMaintenanceMode || formState !== 'idle'}
                   placeholder="seu@email.com"
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -169,33 +188,44 @@ export default function Contact() {
                   id="message" 
                   required
                   rows="4"
+                  disabled={isMaintenanceMode || formState !== 'idle'}
                   placeholder="Como posso te ajudar?"
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all resize-none"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all resize-none disabled:opacity-40 disabled:cursor-not-allowed"
                 ></textarea>
               </div>
 
-              <button 
-                type="submit" 
-                disabled={formState !== 'idle'}
-                className="mt-2 w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 disabled:text-slate-500 text-white font-medium py-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/20"
-              >
-                {formState === 'idle' && (
-                  <>
-                    <Send size={18} /> Enviar Mensagem
-                  </>
-                )}
-                {formState === 'loading' && (
-                  <span className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-                    Processando...
-                  </span>
-                )}
-                {formState === 'success' && (
-                  <span className="text-emerald-400 flex items-center gap-2">
-                    Mensagem enviada com sucesso!
-                  </span>
-                )}
-              </button>
+              {/* Botão Dinâmico: Fallback de E-mail ou Envio por API */}
+              {isMaintenanceMode ? (
+                <a 
+                  href="mailto:murillosouza997@gmail.com?subject=Contato via Portfólio"
+                  className="mt-2 w-full bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-mono py-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg"
+                >
+                  <Mail size={18} /> ./executar_fallback_email.sh
+                </a>
+              ) : (
+                <button 
+                  type="submit" 
+                  disabled={formState !== 'idle'}
+                  className="mt-2 w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 disabled:text-slate-500 text-white font-medium py-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/20"
+                >
+                  {formState === 'idle' && (
+                    <>
+                      <Send size={18} /> Enviar Mensagem
+                    </>
+                  )}
+                  {formState === 'loading' && (
+                    <span className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+                      Processando...
+                    </span>
+                  )}
+                  {formState === 'success' && (
+                    <span className="text-emerald-400 flex items-center gap-2">
+                      Mensagem enviada com sucesso!
+                    </span>
+                  )}
+                </button>
+              )}
             </form>
           </div>
         </div>
