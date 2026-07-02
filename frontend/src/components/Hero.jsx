@@ -206,10 +206,13 @@ export default function Hero() {
 
           {/* Call to Action */}
           <div className="flex items-center gap-4 pt-6">
-            <a href="mailto:murillosouza997@gmail.com" className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-lg transition-colors flex items-center gap-2 shadow-lg shadow-emerald-900/20">
+            <button 
+              onClick={() => document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-lg transition-colors flex items-center gap-2 shadow-lg shadow-emerald-900/20"
+            >
               <Mail size={18} />
               Entrar em contato
-            </a>
+            </button>
             
             <a href="https://github.com/murillomsouza" target="_blank" rel="noreferrer" className="p-3 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-lg transition-colors text-slate-300 hover:text-white">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
